@@ -1,6 +1,12 @@
 import classNames from "classnames";
 import React from "react";
-import type { HTMLProps, ElementType, ReactNode, ComponentType } from "react";
+import type {
+  HTMLProps,
+  ElementType,
+  ReactNode,
+  ComponentType,
+  ComponentPropsWithoutRef,
+} from "react";
 
 import type { ClassName } from "types";
 
@@ -40,7 +46,7 @@ export type Props<P = null> = {
    * Optional classes applied to the "ul" element.
    */
   listClassName?: string;
-};
+} & Omit<ComponentPropsWithoutRef<"nav">, "children" | "className">;
 
 /**
  * This is the [React](https://reactjs.org/) component for Vanilla [Tabs](https://vanillaframework.io/docs/patterns/tabs).
@@ -51,10 +57,11 @@ const Tabs = <P,>({
   className,
   links,
   listClassName,
+  ...props
 }: Props<P>): React.JSX.Element => {
   return (
-    <nav className={classNames("p-tabs", className)}>
-      <ul className={classNames("p-tabs__list", listClassName)}>
+    <nav className={classNames("p-tabs", className)} {...props}>
+      <ul role="tablist" className={classNames("p-tabs__list", listClassName)}>
         {links.map((link, i) => {
           const {
             active,
@@ -69,8 +76,10 @@ const Tabs = <P,>({
             <li
               className={classNames("p-tabs__item", listItemClassName)}
               key={i}
+              role="none presentation"
             >
               <Component
+                role="tab"
                 aria-selected={active}
                 className={classNames("p-tabs__link", className)}
                 data-testid={`tab-link-${label}`}

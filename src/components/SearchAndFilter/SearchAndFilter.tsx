@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, KeyboardEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  KeyboardEvent,
+  ElementType,
+} from "react";
 
 import FilterPanelSection from "./FilterPanelSection";
 import Chip from "../Chip";
@@ -33,6 +39,10 @@ export type Props = {
    * A function that is called when the height of the search container changes.
    */
   onExpandChange?: () => void;
+  /**
+   * Element used for each section title. Supports heading levels or paragraph.
+   */
+  headingElement?: ElementType;
 };
 
 /**
@@ -44,6 +54,7 @@ const SearchAndFilter = ({
   returnSearchData,
   onPanelToggle = () => {},
   onExpandChange = () => {},
+  headingElement = "h3",
   ...props
 }: Props): React.JSX.Element => {
   const [searchData, setSearchData] = useState(existingSearchData);
@@ -261,6 +272,7 @@ const SearchAndFilter = ({
               lead={chip.lead}
               value={chip.value}
               key={`search-${chip.lead}+${chip.value}`}
+              appearance={chip.appearance}
               onDismiss={(event) => {
                 // Prevent filter chip dismissals from bubbling up and triggering the parent onClick handler
                 event.stopPropagation();
@@ -293,7 +305,10 @@ const SearchAndFilter = ({
             type="search"
             value={searchTerm}
           />
-          <button className="u-off-screen" type="submit">
+          <button
+            className="u-off-screen p-search-and-filter__search-button"
+            type="submit"
+          >
             Search
           </button>
         </form>
@@ -304,6 +319,9 @@ const SearchAndFilter = ({
             onKeyDown={() => setSearchBoxExpanded(true)}
             role="button"
             tabIndex={0}
+            aria-label={`Show ${overflowSearchTermCounter} more ${
+              overflowSearchTermCounter === 1 ? "filter" : "filters"
+            }`}
           >
             +{overflowSearchTermCounter}
           </span>
@@ -341,6 +359,7 @@ const SearchAndFilter = ({
                   searchData={searchData}
                   searchTerm={searchTerm}
                   sectionHidden={filterPanelHidden}
+                  headingElement={headingElement}
                 />
               );
             })}

@@ -6,6 +6,7 @@ import {
   useState,
   useRef,
   useEffect,
+  useLayoutEffect,
   useCallback,
   useMemo,
   ReactNode,
@@ -16,6 +17,11 @@ import {
 import { pushEscapeHandler } from "../hooks/useEscapeStack";
 import { createPortal } from "react-dom";
 import { useSSR } from "./useSSR";
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" && typeof window.document !== "undefined"
+    ? useLayoutEffect
+    : useEffect;
 
 type CustomEvent<T = HTMLElement> = {
   event?: SyntheticEvent<T, Event>;
@@ -161,7 +167,9 @@ export const usePortal = ({
     [handleOutsideMouseClick, isServer],
   );
 
-  useEffect(() => {
+  // Mounts before paint so portal content is in the document on the frame it opens.
+  // Guarantees that child effects run after the portal has mounted.
+  useIsomorphicLayoutEffect(() => {
     if (isServer) return null;
     if (
       !(elToMountTo instanceof HTMLElement) ||
