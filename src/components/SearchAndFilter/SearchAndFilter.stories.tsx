@@ -5,6 +5,12 @@ import SearchAndFilter from "./SearchAndFilter";
 const meta: Meta<typeof SearchAndFilter> = {
   component: SearchAndFilter,
   tags: ["autodocs"],
+  argTypes: {
+    headingElement: {
+      control: { type: "inline-radio" },
+      options: ["h1", "h2", "h3", "h4", "h5", "h6", "p"],
+    },
+  },
 };
 
 export default meta;
@@ -16,6 +22,7 @@ export const Default: Story = {
 
   args: {
     returnSearchData: () => {},
+    headingElement: "h3",
 
     filterPanelData: [
       {
@@ -111,6 +118,7 @@ export const WithDataSet: Story = {
   name: "With data set",
 
   args: {
+    headingElement: "h3",
     filterPanelData: [
       {
         id: 0,
@@ -207,6 +215,7 @@ export const WithExistingSearchData: Story = {
   name: "With existing search data",
 
   args: {
+    headingElement: "h3",
     existingSearchData: [
       {
         lead: "Cloud",
@@ -297,6 +306,52 @@ export const WithExistingSearchData: Story = {
           {
             lead: "Owner",
             value: "baz",
+          },
+        ],
+      },
+    ],
+
+    returnSearchData: () => {},
+  },
+};
+
+export const WithChipAppearance: Story = {
+  name: "With chip appearance",
+
+  args: {
+    filterPanelData: [
+      {
+        id: 0,
+        heading: "Status",
+
+        chips: [
+          {
+            value: "new",
+          },
+          {
+            value: "acknowledged",
+          },
+          {
+            value: "resolved",
+          },
+        ],
+      },
+      {
+        id: 1,
+        heading: "Severity",
+
+        chips: [
+          {
+            value: "high",
+            appearance: "negative",
+          },
+          {
+            value: "moderate",
+            appearance: "caution",
+          },
+          {
+            value: "low",
+            appearance: "information",
           },
         ],
       },
